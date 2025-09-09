@@ -15,8 +15,30 @@ ADHESIVES = ["3M9495", "3M300LSE", "3M9448A", "3M9448B", "3M200MP", "DSTT-13N", 
 OTHERS = ["Object", "Gluing"]
 
 # 只清洗这些列（与你截图一致）
-TARGET_COLS = ["物料简称", "名称", "项目名称", "颜色", "材质", "长L(mm)", "宽W(mm)", "厚H(mm)", "是否带指纹", "背胶型号",
+TARGET_COLS = ["物料简称", "名称", "项目名称", "颜色", "材质", "长L(mm)", "宽W(mm)", "厚H(mm)", "是否带指纹",
+               "背胶型号",
                "其它特殊属性"]
+
+
+def load_table(uploaded_file) -> pd.DataFrame:
+    """按后缀选择正确的引擎读取表格；只读一次，避免指针复位问题。"""
+    name = uploaded_file.name.lower()
+    if name.endswith(".csv"):
+        # 如有中文 CSV，可按需加 encoding="utf-8-sig" / "gbk"
+        return pd.read_csv(uploaded_file, dtype=str)
+    elif name.endswith(".xlsx") or name.endswith(".xlsm"):
+        # 显式用 openpyxl 读新版 Excel
+        return pd.read_excel(uploaded_file, dtype=str, engine="openpyxl")
+    elif name.endswith(".xls"):
+        # 老版 Excel 用 xlrd
+        return pd.read_excel(uploaded_file, dtype=str, engine="xlrd")
+    else:
+        # 兜底：先试 openpyxl，再退回 xlrd
+        try:
+            return pd.read_excel(uploaded_file, dtype=str, engine="openpyxl")
+        except Exception:
+            uploaded_file.seek(0)
+            return pd.read_excel(uploaded_file, dtype=str, engine="xlrd")
 
 
 # ====== 小工具 ======
@@ -241,10 +263,7 @@ st.title("📂 指定列清洗（安全模式：避免误清洗）")
 uploaded_file = st.file_uploader("上传文件（CSV / XLS / XLSX）", type=["csv", "xls", "xlsx"])
 if uploaded_file:
     # 读入
-    if uploaded_file.name.lower().endswith(".csv"):
-        df = pd.read_csv(uploaded_file, dtype=str)
-    else:
-        df = pd.read_excel(uploaded_file, dtype=str)
+    df = load_table(uploaded_file)
 
     st.write("原始数据预览：", df.head())
 
@@ -289,5 +308,5 @@ if uploaded_file:
             log_df.to_excel(log_file, index=False)
             st.download_button("📑 下载修改日志", open(log_file, "rb"), file_name=log_file)
 
-        st.success("✅ 清洗完成（仅对指定列，且只在原表上标绿）")
-        st.download_button("⬇️ 下载清洗后的文件", open(cleaned_file, "rb"), file_name=cleaned_file)
+        st.success(" 清洗完成（仅对指定列，且只在原表上标绿）")
+        st.download_button(" 下载清洗后的文件", open(cleaned_file, "rb"), file_name=cleaned_file)
