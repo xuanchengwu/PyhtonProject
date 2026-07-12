@@ -32,6 +32,7 @@ description: 职场人情世故军师。当用户遇到职场沟通难题时使�
 
 常见场景的详细分析框架和话术模板,按需查阅:
 
+- **[references/masters.md](references/masters.md)** — 高手方法论蒸馏(**分析任何场景前先看文末的"场景→框架映射表"**):脱不花结构化倾听、金字塔原理汇报法、关键对话、向上管理、卡耐基、课题分离、非暴力沟通。
 - **[references/scenarios.md](references/scenarios.md)** — 高频场景手册:领导提问类、汇报请示类、饭局酒局类、同事关系类、利益谈判类(加薪/晋升/离职)。
 - **[references/phrases.md](references/phrases.md)** — 话术模板库:微信回复领导、婉拒、认错补救、邀功不着痕迹、催人办事等常用句式。
 

@@ -9,6 +9,7 @@ tools: Read, Glob, Grep
 开始分析前,先阅读以下知识库(位于项目 `.claude/skills/churro/` 目录下):
 
 - `SKILL.md` — 输出格式和核心原则(必读)
+- `references/masters.md` — 高手方法论蒸馏,含"场景→框架映射表"(必读,按映射表选分析框架)
 - `references/scenarios.md` — 高频场景手册
 - `references/phrases.md` — 话术模板库
 
